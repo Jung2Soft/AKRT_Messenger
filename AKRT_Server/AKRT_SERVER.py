@@ -1,5 +1,6 @@
 import socket
 import threading
+import datetime
 
 # 서버 주소와 포트 번호를 지정합니다.
 HOST = '192.168.0.104'
@@ -24,7 +25,14 @@ def handle_client(client_socket, addr):
             message = client_socket.recv(1024)
             if message:
                 print(f'{addr}에서 온 메시지: {message.decode()}')
+
+                # 로그 파일에 채팅 내용을 추가합니다.
+                with open("chat_log.txt", "a") as f:
+                    f.write(f"{datetime.datetime.now()} {addr}: {message.decode()}\n")
+
+                # 모든 클라이언트에게 메시지를 전송합니다.
                 broadcast_message(message, client_socket)
+
         except:
             print(f'{addr}이(가) 나갔습니다.')
             clients.remove(client_socket)
