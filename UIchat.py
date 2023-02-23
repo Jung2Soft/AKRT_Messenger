@@ -33,8 +33,8 @@ class WindowClass1(QMainWindow, form_class1):
 
     def connect_server(self, event):
         # 서버 주소와 포트 번호를 지정합니다.
-        HOST = self.IPedit.text()
-        PORT = int(self.PORTedit.text())
+        HOST = self.IPedit.text().replace(" ", "") # 공백 지움
+        PORT = int(self.PORTedit.text().replace(" ", "")) # 동일
 
         # 서버에 연결합니다.
         try:
@@ -125,10 +125,16 @@ class WindowClass2(QMainWindow, form_class2):
 
     def get_message(self):
         while True:
-            message = self.client_socket.recv(1024).decode()  # self.client_socket을 이용해 메시지를 수신합니다.
-            self.model.appendRow(QStandardItem(message))
-            time.sleep(0.1)
-            self.chatview.scrollToBottom()
+            final_message = b''
+            while True:
+                message = self.client_socket.recv(1024)
+                if not message:
+                    break
+                final_message += message
+                if len(message) < 1024:
+                    break
+            decoded_message = final_message.decode()
+            self.model.appendRow(QStandardItem(decoded_message)) # 1024바이트가 넘어도 유연하게 데이터를 받음
 
 
     def mousePressEvent(self, event):
