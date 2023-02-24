@@ -89,7 +89,7 @@ def upload_log():
     else:
         print("복구옵션 꺼짐")
         with open("api/console_log.txt", "a") as f:
-            f.write("복구옵션 꺼짐")
+            f.write("복구옵션 꺼짐\n")
 
 
 def addmin():
@@ -153,10 +153,11 @@ def handle_client(client_socket, addr):
 
         except:
             print(f'{addr}이(가) 나갔습니다.')
-            clients.remove(client_socket)
-            client_socket.close()
             with open("api/console_log.txt", "a") as f:
                 f.write(f"{str(datetime.datetime.now())[0:19]} {addr}이(가) 나갔습니다.\n")
+            clients.remove(client_socket)
+            client_socket.close()
+
             break
 
 
