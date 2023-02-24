@@ -17,7 +17,7 @@ global job1
 global backup
 
 # Google Drive 백업 여부
-backup = True
+backup = False
 
 # 인증 토큰 파일 경로
 TOKEN_FILE = 'api/token.json'

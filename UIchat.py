@@ -98,10 +98,15 @@ class WindowClass2(QMainWindow, form_class2):
 
     def eventFilter(self, obj, event):
         if event.type() == QEvent.KeyPress and obj is self.mychat:
-            if event.key() == Qt.Key_Return and self.mychat.hasFocus():
+            if event.key() == Qt.Key_Return and event.modifiers() & Qt.ShiftModifier:
+                # Shift + Enter 키를 눌렀을 때 다음줄로 줄바꿈
+                self.mychat.appendPlainText("")
+                return True
+            elif event.key() == Qt.Key_Return and self.mychat.hasFocus() and not event.modifiers() & Qt.ShiftModifier:
+                # Enter 키를 눌렀을 때 메시지 보내기
                 self.send_message(None)
                 return True
-        return False  # 이 부분을 추가
+        return False
 
     def send_message(self, event):
         date = urllib.request.urlopen(url).headers['Date'][5:-4]
@@ -115,7 +120,8 @@ class WindowClass2(QMainWindow, form_class2):
         sendtime = (f'[{hour}:{min}]  ')
         message = self.mychat.toPlainText()
         sendmessage = sendtime + message
-        if len(message.replace(' ', '')) < 1:
+        sendmessage = sendmessage.replace('\n\n', '').replace('\n', '\n                ') # 공백 도배 방지용이긴한데 수정 좀 필요할듯 + 공백 추가
+        if len(message.replace(' ', '').replace('\n', '')) < 1:
             pass
         else:
             self.client_socket.sendall(sendmessage.encode())  # self.client_socket을 이용해 메시지를 전송합니다.
