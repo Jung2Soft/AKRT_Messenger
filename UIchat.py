@@ -141,6 +141,7 @@ class WindowClass2(QMainWindow, form_class2):
                     break
             decoded_message = final_message.decode()
             self.model.appendRow(QStandardItem(decoded_message)) # 1024바이트가 넘어도 유연하게 데이터를 받음
+            self.chatview.scrollToBottom()
 
 
     def mousePressEvent(self, event):
