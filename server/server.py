@@ -13,6 +13,7 @@ from log import *
 
 class RepeatableTimer(object):
     from typing import Iterable
+
     def __init__(self, interval, function, args: Iterable | None):
         self._interval = interval
         self._function = function
@@ -37,13 +38,11 @@ class RepeatableTimer(object):
 
 class Server:
     def __init__(self, backup: bool, host: str, port: int):
-        self.last_chat_stop = None
-        self.job1 = None
         self.backup = backup
 
         base_interval = 60.0
-        self.not_writing = RepeatableTimer(base_interval, self.log)
-        self.when_writing = RepeatableTimer(base_interval * 10.0, self.log)
+        self.not_writing_timer = RepeatableTimer(base_interval, self.log)
+        self.when_writing_timer = RepeatableTimer(base_interval * 10.0, self.log)
 
         # 처음 서버 실행시 저장
         self.first_save = 0
@@ -74,18 +73,18 @@ class Server:
         self.clients = []
 
     def when_chat(self):  # 채팅 입력 받으면
-        if not self.when_writing.is_started():  # 채팅할때 타이머 돌아감
-            self.when_writing.start()
+        if not self.when_writing_timer.is_started():  # 채팅할때 타이머 돌아감
+            self.when_writing_timer.start()
 
-        if self.not_writing.is_started():  # 채팅끝남 감지 타이머는 채팅할 때 마다 초기화 됨
-            self.not_writing.cancel()
-        self.not_writing.start()  # 채팅끝남 감지 타이머도 돌아감
+        if self.not_writing_timer.is_started():  # 채팅끝남 감지 타이머는 채팅할 때 마다 초기화 됨
+            self.not_writing_timer.cancel()
+        self.not_writing_timer.start()  # 채팅끝남 감지 타이머도 돌아감
 
     def log(self):
         self.google_drive.upload_log()
         print("로그 업로드!")
-        self.not_writing.cancel()
-        self.when_writing.cancel()  # 채팅 하지 않을때는 한번 업로드하고 그대로 타이머 멈춤
+        self.not_writing_timer.cancel()
+        self.when_writing_timer.cancel()  # 채팅 하지 않을때는 한번 업로드하고 그대로 타이머 멈춤
 
     # 클라이언트로부터 메시지를 받아서 다른 클라이언트에게 보내는 함수
     def handle_client(self, client_socket, addr):
