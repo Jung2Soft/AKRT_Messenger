@@ -110,6 +110,8 @@ class WindowClass2(QMainWindow, form_class2):
         return False
 
     def send_message(self, event):
+        global EOL
+
         date = urllib.request.urlopen(url).headers['Date'][5:-4]
         hour, min = date[12:14], date[15:17]
         hour = int(hour) + 9
@@ -122,6 +124,7 @@ class WindowClass2(QMainWindow, form_class2):
         message = self.mychat.toPlainText()
         sendmessage = sendtime + message
         sendmessage = sendmessage.replace('\n\n', '').replace('\n', '\n                ') # 공백 도배 방지용이긴한데 수정 좀 필요할듯 + 공백 추가
+        sendmessage = sendmessage.replace('\n', EOL.decode('utf8'))
         if len(message.replace(' ', '').replace('\n', '')) < 1:
             pass
         else:
