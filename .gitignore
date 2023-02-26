@@ -6,5 +6,6 @@
 /UIchat.spec
 /build
 /dist
-/.idean
+/.idea
 /AKRT_Server
+/server/settings.json
