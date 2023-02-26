@@ -5,7 +5,7 @@ import threading
 from backup import GoogleDriveManager
 from log import *
 
-
+EOL = b"</EOL/>"
 class RepeatableTimer(object):
     from typing import Iterable
 
@@ -36,8 +36,8 @@ class Server:
         self.backup = backup
 
         base_interval = 60.0
-        self.not_writing_timer = RepeatableTimer(base_interval, self.log)
-        self.when_writing_timer = RepeatableTimer(base_interval * 10.0, self.log)
+        self.not_writing_timer = RepeatableTimer(base_interval, self.log, None)
+        self.when_writing_timer = RepeatableTimer(base_interval * 10.0, self.log, None)
 
         # 처음 서버 실행시 저장
         self.first_save = 0
@@ -117,6 +117,8 @@ class Server:
 
     # 클라이언트를 대기하며 연결을 처리하는 함수
     def accept_clients(self):
+        global EOL
+
         while True:
             client_socket, addr = self.server_socket.accept()
             print(f'{addr}이(가) 접속했습니다.')
@@ -125,10 +127,11 @@ class Server:
             client_thread.start()
             console_log(f"{addr}이(가) 접속했습니다.\n")
             with open('api/chat_log.txt', mode='r') as f:
-                line = f.read()
-            client_socket.send(line.encode())
+                log = f.read()
+                for line in log.encode('utf8').splitlines():
+                    client_socket.send(line + EOL)
             msg = "[Server]  Welcome to AKRT Messenger"
-            client_socket.send(msg.encode())
+            client_socket.send(msg.encode('utf8'))
 
     def run(self):
         # 클라이언트 연결을 대기합니다.

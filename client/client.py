@@ -10,8 +10,9 @@ import requests
 import time
 import urllib.request
 
-url = 'http://www.google.com'
+EOL = b"</EOL/>"
 
+url = 'http://www.google.com'
 
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
@@ -133,6 +134,7 @@ class WindowClass2(QMainWindow, form_class2):
         while True:
             final_message = b''
             while True:
+
                 message = self.client_socket.recv(1024)
                 if not message:
                     break
