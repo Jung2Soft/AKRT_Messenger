@@ -14,15 +14,18 @@ EOL = b"</EOL/>"
 
 url = 'http://www.google.com'
 
+
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
     base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
     return os.path.join(base_path, relative_path)
 
+
 form1 = resource_path("connect.ui")
 form2 = resource_path("chat.ui")
 form_class1 = uic.loadUiType(form1)[0]
 form_class2 = uic.loadUiType(form2)[0]
+
 
 class WindowClass1(QMainWindow, form_class1):
     def __init__(self):
@@ -34,12 +37,12 @@ class WindowClass1(QMainWindow, form_class1):
 
     def connect_server(self, event):
         # 서버 주소와 포트 번호를 지정합니다.
-        HOST = self.IPedit.text().replace(" ", "") # 공백 지움
-        PORT = int(self.PORTedit.text().replace(" ", "")) # 동일
+        HOST = self.IPedit.text().replace(" ", "")  # 공백 지움
+        PORT = int(self.PORTedit.text().replace(" ", ""))  # 동일
 
         # 서버에 연결합니다.
         try:
-            self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # 소켓 객체를 생성합니다.
+            self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # 소켓 객체를 생성합니다.
             self.client_socket.connect((HOST, PORT))
             myWindow2 = WindowClass2(self.client_socket)  # client_socket 변수를 WindowClass2로 전달합니다.
             myWindow2.show()
@@ -48,10 +51,10 @@ class WindowClass1(QMainWindow, form_class1):
             print("연결할 수 없습니다.")
 
     def mousePressEvent(self, event):
-            if event.button() == Qt.LeftButton:
-                self.offset = event.pos()
-            else:
-                super().mousePressEvent(event)
+        if event.button() == Qt.LeftButton:
+            self.offset = event.pos()
+        else:
+            super().mousePressEvent(event)
 
     def mouseMoveEvent(self, event):
         try:
@@ -73,7 +76,7 @@ class WindowClass2(QMainWindow, form_class2):
         self.setupUi(self)
 
         self.client_socket = client_socket  # 전달받은 client_socket 변수를 인스턴스 변수로 저장합니다.
-        #self.myip.setText(self.client_socket.getsockname()[0]) #내 내부 IP 확인
+        # self.myip.setText(self.client_socket.getsockname()[0]) #내 내부 IP 확인
         self.setWindowFlags(Qt.FramelessWindowHint)
         ip = requests.get("http://ip.jsontest.com").json()['ip']
         self.myip.setText(ip)
@@ -88,8 +91,6 @@ class WindowClass2(QMainWindow, form_class2):
         self.mychat.installEventFilter(self)
 
         self.chatview.scrollToBottom()
-
-
 
         # 스레드
         self.send_thread = threading.Thread(target=self.send_message)
@@ -123,13 +124,13 @@ class WindowClass2(QMainWindow, form_class2):
         sendtime = (f'[{hour}:{min}]  ')
         message = self.mychat.toPlainText()
         sendmessage = sendtime + message
-        sendmessage = sendmessage.replace('\n\n', '').replace('\n', '\n                ') # 공백 도배 방지용이긴한데 수정 좀 필요할듯 + 공백 추가
-        sendmessage = sendmessage.replace('\n', EOL.decode('utf8'))
+        sendmessage = sendmessage.replace('\n\n', '')  # 공백 도배 방지용이긴한데 수정 좀 필요할듯 + 공백 추가
+
         if len(message.replace(' ', '').replace('\n', '')) < 1:
             pass
         else:
-            self.client_socket.sendall(sendmessage.encode())  # self.client_socket을 이용해 메시지를 전송합니다.
             self.model.appendRow(QStandardItem(sendmessage))
+            self.client_socket.sendall(sendmessage.encode('utf8').replace(b"\n",EOL))  # self.client_socket을 이용해 메시지를 전송합니다.
             self.mychat.clear()
             self.chatview.scrollToBottom()
 
@@ -146,19 +147,22 @@ class WindowClass2(QMainWindow, form_class2):
                 final_message += message
                 if len(message) < 1024:
                     break
+
+
             decoded_message = final_message.decode('utf8')
-            splited = decoded_message.split(EOL.decode('utf8'))
-            for msg in splited:
-                self.model.appendRow(QStandardItem(msg)) # 1024바이트가 넘어도 유연하게 데이터를 받음
+            splited = decoded_message.split("\n")
+            replaced = map(lambda x: x.replace(EOL.decode('utf8'), "\n"), splited)
+            print(decoded_message)
+            for msg in replaced:
+                self.model.appendRow(QStandardItem(msg))  # 1024바이트가 넘어도 유연하게 데이터를 받음
             time.sleep(0.1)
             self.chatview.scrollToBottom()
 
-
     def mousePressEvent(self, event):
-            if event.button() == Qt.LeftButton:
-                self.offset = event.pos()
-            else:
-                super().mousePressEvent(event)
+        if event.button() == Qt.LeftButton:
+            self.offset = event.pos()
+        else:
+            super().mousePressEvent(event)
 
     def mouseMoveEvent(self, event):
         try:
@@ -181,4 +185,4 @@ if __name__ == "__main__":
     app.exec_()
 
 # 클라이언트 소켓 닫기
-myWindow1.client_socket.close() # 인스턴스 변수로 변경 후 호출
+myWindow1.client_socket.close()  # 인스턴스 변수로 변경 후 호출

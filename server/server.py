@@ -83,13 +83,23 @@ class Server:
     def handle_client(self, client_socket, addr):
         while True:
             try:
-                message = client_socket.recv(1024)
-                if message:
-                    print(f'{addr}에서 온 메시지: {message.decode()}')
+                final_message = b''
+                while True:
+                    message = client_socket.recv(1024)
+                    if not message:
+                        break
+                    final_message += message
+                    if len(message) < 1024:
+                        break
+
+                if final_message:
+                    message = final_message.decode('utf8')
+
+                    print(f'{addr}에서 온 메시지: {message}')
 
                     # 로그 파일에 채팅 내용을 추가합니다.
-                    chat_log(message.decode())
-                    console_log(message.decode())
+                    chat_log(message)
+                    console_log(message)
 
                     # 모든 클라이언트에게 메시지를 전송합니다.
                     self.broadcast_message(message, client_socket)
@@ -127,7 +137,7 @@ class Server:
             with open('api/chat_log.txt', mode='r') as f:
                 log = f.read()
                 for line in log.encode('utf8').splitlines():
-                    client_socket.send(line + EOL)
+                    client_socket.send(line + b"\n")
             msg = "[Server]  Welcome to AKRT Messenger"
             client_socket.send(msg.encode('utf8'))
 
