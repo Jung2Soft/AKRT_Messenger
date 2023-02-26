@@ -10,12 +10,12 @@ from googleapiclient.errors import HttpError
 from googleapiclient.http import MediaFileUpload
 from google.auth.transport.requests import Request
 import schedule
-
 global chat_min
 global chat_min2
 global chat_stop
 global job1
 global backup
+
 
 # Google Drive 백업 여부
 backup = False
@@ -78,8 +78,8 @@ def upload_log():
         FILE_PATH = 'api/chat_log.txt'
 
         # 로그 파일 업로드
-        file_name = str(datetime.datetime.now())[0:19].replace('-', '_').replace(' ', '_') + "_chatlog.txt"
-        # file_name = "chat_log.txt"
+        file_name = str(datetime.datetime.now())[0:19].replace('-','_').replace(' ','_') + "_chatlog.txt"
+        #file_name = "chat_log.txt"
         file_metadata = {'name': file_name, 'parents': [FOLDER_ID]}
         media = MediaFileUpload(FILE_PATH, resumable=True)
         file = service.files().create(body=file_metadata, media_body=media, fields='id').execute()
@@ -91,13 +91,11 @@ def upload_log():
         with open("api/console_log.txt", "a") as f:
             f.write("복구옵션 꺼짐\n")
 
-
 def addmin():
     global chat_min
     global chat_min2
     chat_min = chat_min + 1
     chat_min2 = chat_min2 + 1
-
 
 def Detect_Chat():
     global chat_stop
@@ -124,7 +122,6 @@ def Detect_Chat():
 
         schedule.run_pending()
         time.sleep(1)
-
 
 # 클라이언트로부터 메시지를 받아서 다른 클라이언트에게 보내는 함수
 def handle_client(client_socket, addr):
@@ -153,13 +150,11 @@ def handle_client(client_socket, addr):
 
         except:
             print(f'{addr}이(가) 나갔습니다.')
-            with open("api/console_log.txt", "a") as f:
-                f.write(f"{str(datetime.datetime.now())[0:19]} {addr}이(가) 나갔습니다.\n")
             clients.remove(client_socket)
             client_socket.close()
-
+            with open("api/console_log.txt", "a") as f:
+                f.write(f"{str(datetime.datetime.now())[0:19]} {addr}이(가) 나갔습니다.\n")
             break
-
 
 # 다른 클라이언트에게 메시지를 보내는 함수
 def broadcast_message(message, sender):
@@ -189,6 +184,9 @@ def accept_clients():
         client_socket.send(msg.encode())
 
 
+
+
+
 # 첫번째 로그 파일을 업로드 합니다.
 if firstsave == 0:
     upload_log()
@@ -202,7 +200,6 @@ print(f'서버 주소: {HOST}, 포트 번호: {PORT}')
 with open("api/console_log.txt", "a") as f:
     f.write(f"{str(datetime.datetime.now())[0:19]} 채팅 서버를 시작합니다.\n")
     f.write(f"{str(datetime.datetime.now())[0:19]} 서버 주소: {HOST}, 포트 번호: {PORT}\n")
-
 detect_chat_thread = threading.Thread(target=Detect_Chat)
 detect_chat_thread.start()
 accept_thread = threading.Thread(target=accept_clients)

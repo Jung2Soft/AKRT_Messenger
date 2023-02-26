@@ -1,10 +1,8 @@
 /venv
 /server/api
-/server/AKRT_SERVER.py
+/client/chat.ui
+/client/connect.ui
 /client/client.spec
 /build
 /dist
 /.idean
-/AKRT_Server
-/client/chat.ui
-/client/connect.ui
