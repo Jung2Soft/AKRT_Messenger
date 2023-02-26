@@ -124,7 +124,7 @@ class WindowClass2(QMainWindow, form_class2):
         sendtime = (f'[{hour}:{min}]  ')
         message = self.mychat.toPlainText()
         sendmessage = sendtime + message
-        sendmessage = sendmessage.replace('\n\n', '')  # 공백 도배 방지용이긴한데 수정 좀 필요할듯 + 공백 추가
+        sendmessage = sendmessage.replace('\n\n', '').replace('\n','\n                ')  # 공백 도배 방지용이긴한데 수정 좀 필요할듯 + 공백 추가
 
         if len(message.replace(' ', '').replace('\n', '')) < 1:
             pass
