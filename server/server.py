@@ -2,10 +2,6 @@ import json
 import os
 import socket
 import threading
-import datetime
-import time
-
-import schedule
 
 from backup import GoogleDriveManager
 from log import *
@@ -104,8 +100,7 @@ class Server:
                     self.when_chat()
             except:
                 print(f'{addr}이(가) 나갔습니다.')
-                with open("api/console_log.txt", "a") as f:
-                    f.write(f"{str(datetime.datetime.now())[0:19]} {addr}이(가) 나갔습니다.\n")
+                console_log(f"{addr}이(가) 나갔습니다.\n")
                 self.clients.remove(client_socket)
                 client_socket.close()
 

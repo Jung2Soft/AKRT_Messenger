@@ -1,11 +1,7 @@
 /venv
-/server/api/chat_log.txt
 /server/api
-/server/AKRT_SERVER2.py
-/server/test.py
-/UIchat.spec
+/client/client.spec
 /build
 /dist
 /.idea
-/AKRT_Server
 /server/settings.json
