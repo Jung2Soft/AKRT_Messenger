@@ -18,8 +18,8 @@ def resource_path(relative_path):
     base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
     return os.path.join(base_path, relative_path)
 
-form1 = resource_path("connect.ui")
-form2 = resource_path("chat.ui")
+form1 = resource_path("res/connect.ui")
+form2 = resource_path("res/chat.ui")
 form_class1 = uic.loadUiType(form1)[0]
 form_class2 = uic.loadUiType(form2)[0]
 

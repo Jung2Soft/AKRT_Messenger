@@ -1,8 +1,8 @@
 /venv
-/AKRT_Server/api/chat_log.txt
-/AKRT_Server/api
-/AKRT_Server/AKRT_SERVER2.py
-/AKRT_Server/test.py
+/server/api/chat_log.txt
+/server/api
+/server/AKRT_SERVER2.py
+/server/test.py
 /UIchat.spec
 /build
 /dist
