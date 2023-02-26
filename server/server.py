@@ -97,7 +97,7 @@ class Server:
                     self.when_chat()
             except:
                 print(f'{addr}이(가) 나갔습니다.')
-                console_log(f"{addr}이(가) 나갔습니다.\n")
+                console_log(f"{addr}이(가) 나갔습니다.")
                 self.clients.remove(client_socket)
                 client_socket.close()
 
@@ -123,7 +123,7 @@ class Server:
             self.clients.append(client_socket)
             client_thread = threading.Thread(target=self.handle_client, args=(client_socket, addr))
             client_thread.start()
-            console_log(f"{addr}이(가) 접속했습니다.\n")
+            console_log(f"{addr}이(가) 접속했습니다.")
             with open('api/chat_log.txt', mode='r') as f:
                 log = f.read()
                 for line in log.encode('utf8').splitlines():
@@ -136,8 +136,8 @@ class Server:
         print('채팅 서버를 시작합니다.')
         print(f'서버 주소: {HOST}, 포트 번호: {PORT}')
 
-        console_log("채팅 서버를 시작합니다.\n")
-        console_log("서버 주소: {HOST}, 포트 번호: {PORT}\n")
+        console_log("채팅 서버를 시작합니다.")
+        console_log("서버 주소: {HOST}, 포트 번호: {PORT}")
 
         accept_thread = threading.Thread(target=self.accept_clients)
         accept_thread.start()
