@@ -1,7 +1,7 @@
 /venv
 /server/api
-/server/settings.json
-/client/client.spec
+server/settings.json
+client/client.spec
 /client/build
 /client/dist
 /.idea
