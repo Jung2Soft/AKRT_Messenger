@@ -36,8 +36,8 @@ class Server:
         self.backup = backup
 
         base_interval = 60.0
-        self.not_writing_timer = RepeatableTimer(base_interval, self.log, None)
-        self.when_writing_timer = RepeatableTimer(base_interval * 10.0, self.log, None)
+        self.not_writing_timer = RepeatableTimer(base_interval, self.google_drive_log, None)
+        self.when_writing_timer = RepeatableTimer(base_interval * 10.0, self.google_drive_log, None)
 
         # 처음 서버 실행시 저장
         self.first_save = 0
@@ -74,7 +74,7 @@ class Server:
             self.not_writing_timer.cancel()
         self.not_writing_timer.start()  # 채팅끝남 감지 타이머도 돌아감
 
-    def log(self):
+    def google_drive_log(self):
         self.google_drive.upload_log()
         self.not_writing_timer.cancel()
         self.when_writing_timer.cancel()  # 채팅 하지 않을때는 한번 업로드하고 그대로 타이머 멈춤
@@ -93,8 +93,8 @@ class Server:
 
                     # 모든 클라이언트에게 메시지를 전송합니다.
                     self.broadcast_message(message, client_socket)
-
-                    self.when_chat()
+                    if self.backup:
+                        self.when_chat()
             except:
                 print(f'{addr}이(가) 나갔습니다.')
                 console_log(f"{addr}이(가) 나갔습니다.")
