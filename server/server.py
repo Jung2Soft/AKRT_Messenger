@@ -2,7 +2,6 @@ import json
 import os
 import socket
 import threading
-
 from backup import GoogleDriveManager
 from log import *
 
@@ -147,8 +146,8 @@ if __name__ == "__main__":
 
     BACKUP = False
 
-    HOST = '114.204.77.240'
-    PORT = 44990
+    HOST = '127.0.0.1'
+    PORT = 8080
 
     if os.path.isfile("settings.json"):
         with open('settings.json', mode='r') as f:

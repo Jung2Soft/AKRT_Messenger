@@ -4,8 +4,7 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from google.auth.transport.requests import Request
 from googleapiclient.http import MediaFileUpload
-
-from time_tool import get_time_for_file, get_time
+from log import *
 
 
 class GoogleDriveManager:
@@ -44,10 +43,8 @@ class GoogleDriveManager:
 
         # 로그 파일 업로드
         file_name = get_time_for_file() + "_chatlog.txt"
-        # file_name = "chat_log.txt"
         file_metadata = {'name': file_name, 'parents': [folder_id]}
         media = MediaFileUpload(file_path, resumable=True)
         file = self.service.files().create(body=file_metadata, media_body=media, fields='id').execute()
         print(file_name + " 으로 복구됨. 파일 아이디: " + file.get('id'))
-        with open("api/console_log.txt", "a") as f:
-            f.write(get_time() + file_name + " 으로 복구됨. 파일 아이디: " + file.get('id') + "\n")
+        console_log(file_name + " 으로 복구됨. 파일 아이디: " + file.get('id'))
