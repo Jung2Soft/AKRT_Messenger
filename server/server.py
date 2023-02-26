@@ -115,6 +115,8 @@ class Server:
 
     # 클라이언트를 대기하며 연결을 처리하는 함수
     def accept_clients(self):
+        global EOL
+
         while True:
             client_socket, addr = self.server_socket.accept()
             print(f'{addr}이(가) 접속했습니다.')
