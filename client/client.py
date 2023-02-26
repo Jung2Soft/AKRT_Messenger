@@ -144,7 +144,7 @@ class WindowClass2(QMainWindow, form_class2):
                 if len(message) < 1024:
                     break
             decoded_message = final_message.decode('utf8')
-            splited = decoded_message.split(EOL)
+            splited = decoded_message.split(EOL.decode('utf8'))
             for msg in splited:
                 self.model.appendRow(QStandardItem(msg)) # 1024바이트가 넘어도 유연하게 데이터를 받음
             time.sleep(0.1)
