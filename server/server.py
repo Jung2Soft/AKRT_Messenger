@@ -52,8 +52,7 @@ class Server:
                 pass
         else:
             print("복구옵션 꺼짐")
-            with open("api/console_log.txt", "a") as f:
-                f.write("복구옵션 꺼짐\n")
+            console_log("복구옵션 꺼짐")
 
         # 소켓 객체를 생성합니다.
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -77,7 +76,6 @@ class Server:
 
     def log(self):
         self.google_drive.upload_log()
-        print("로그 업로드!")
         self.not_writing_timer.cancel()
         self.when_writing_timer.cancel()  # 채팅 하지 않을때는 한번 업로드하고 그대로 타이머 멈춤
 
@@ -148,7 +146,6 @@ class Server:
 if __name__ == "__main__":
 
     BACKUP = False
-
     HOST = '127.0.0.1'
     PORT = 8080
 
@@ -157,6 +154,7 @@ if __name__ == "__main__":
             file = json.load(f)
             HOST = file["HOST"]
             PORT = file["PORT"]
+            BACKUP = file["BACKUP"]
 
     server = Server(BACKUP, HOST, PORT)
     server.run()
