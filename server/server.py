@@ -5,6 +5,7 @@ import threading
 from backup import GoogleDriveManager
 from log import *
 
+EOL = b"</EOL/>"
 class RepeatableTimer(object):
     from typing import Iterable
 
@@ -124,7 +125,7 @@ class Server:
             with open('api/chat_log.txt', mode='r') as f:
                 log = f.read()
                 for line in log.encode('utf8').splitlines():
-                    client_socket.send(line)
+                    client_socket.send(line + EOL)
             msg = "[Server]  Welcome to AKRT Messenger"
             client_socket.send(msg.encode('utf8'))
 
